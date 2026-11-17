@@ -1,53 +1,27 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { listarHospitais } from "../services/hospitaisApi";
 
 const router = useRouter();
 
 const searchQuery = ref("");
 
-const hospitais = ref([
-  {
-    id: 1,
-    nome: "Hospital Dona Helena",
-    endereco:
-      "Rua Blumenau, 123 - América, Joinville - SC 89204-2500, Brazil",
-    telefone: "+55 (47) 3451-3333",
-    imagem: "img/maps/dona-helena.png",
-  },
-  {
-    id: 2,
-    nome: "Hospital Regional Hans Dieter Schmidt (HRHDS)",
-    endereco:
-      "Rua Xavier Arp, 320 - Boa Vista, Joinville - SC 89220-680, Brazil",
-    telefone: "+55 (47) 3451-3100",
-    imagem: "img/maps/hrhds.png",
-  },
-  {
-    id: 3,
-    nome: "Hospital Municipal São José",
-    endereco:
-      "Av. Getúlio Vargas, 238 - Anita Garibaldi, Joinville - SC 89202-030, Brazil",
-    telefone: "+55 (47) 3441-6666",
-    imagem: "img/maps/sao-jose.png",
-  },
-  {
-    id: 4,
-    nome: "Hospital Erasto Gaertner",
-    endereco:
-      "R. Conselheiro Pedreira, 624 - Pirabeiraba, Joinville - SC, 89239-200, Brazil",
-    telefone: "+55 (47) 3121-5400",
-    imagem: "img/maps/sao-jose.png",
-  },
-    {
-    id: 3,
-    nome: "Hospital Bethesda",
-    endereco:
-      "R. Saguaçu, 120 - Saguaçu, Joinville - SC, 89221-010, Brazil",
-    telefone: "+55 (47) 3511-2815",
-    imagem: "img/maps/sao-jose.png",
-  },
-]);
+const hospitais = ref([]);
+const carregando = ref(true);
+const erro = ref("");
+
+async function carregarHospitais() {
+  carregando.value = true;
+  erro.value = "";
+  try {
+    hospitais.value = await listarHospitais();
+  } catch (falha) {
+    erro.value = falha.message;
+  } finally {
+    carregando.value = false;
+  }
+}
 
 const hospitaisFiltrados = computed(() => {
   const busca = searchQuery.value.toLowerCase().trim();
@@ -71,6 +45,8 @@ function selecionarHospital(hospital) {
     },
   });
 }
+
+onMounted(carregarHospitais);
 </script>
 <template>
   <main class="pagina-hospitais">
@@ -88,7 +64,12 @@ function selecionarHospital(hospital) {
         />
       </span>
     </div>
-    <div class="lista-hospitais">
+    <div v-if="carregando" class="estado-lista" role="status">Carregando hospitais…</div>
+    <div v-else-if="erro" class="estado-lista erro-lista" role="alert">
+      <p>{{ erro }}</p>
+      <button type="button" @click="carregarHospitais">Tentar novamente</button>
+    </div>
+    <div v-else class="lista-hospitais">
       <div
         v-for="hospital in hospitaisFiltrados"
         :key="hospital.id"
@@ -187,6 +168,15 @@ h1 {
   flex-direction: column;
   gap: 13px;
 }
+
+.estado-lista {
+  max-width: 700px;
+  margin: 40px auto;
+  color: #52616b;
+  text-align: center;
+}
+.erro-lista { color: #9b302a; }
+.erro-lista button { margin-top: 12px; color: #005b96; font-weight: 700; }
 
 .card-hospital {
   width: 100%;

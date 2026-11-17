@@ -28,15 +28,15 @@ Na versão atual, foram efetivamente desenvolvidas:
 - login, controle de sessão e proteção de páginas que exigem autenticação;
 - painel do usuário;
 - visualização, edição e exclusão do perfil, além do encerramento da sessão;
-- listagem e busca de hospitais parceiros;
-- página de detalhes dos hospitais, com informações gerais, localização, acesso ao mapa e médicos disponíveis;
+- CRUD de hospitais integrado à API local JSON Server, com cadastro, listagem, consulta por ID, edição e exclusão;
+- página pública de hospitais com busca, e página de detalhes carregadas pela API;
 - formulário de agendamento de atendimento, com seleção de consulta, data, período, hospital e médico;
 - caderneta de vacinação com pesquisa e filtros por público (gestantes, crianças, adolescentes, adultos e idosos);
 - visualização de detalhes das vacinas e registro de vacinação;
 - páginas institucionais de atendimento, consultas, vacinas, fluxograma e apresentação da equipe;
 - navegação responsiva entre as páginas.
 
-O projeto funciona como um **protótipo front-end**. Os dados de cadastro e sessão são mantidos no `localStorage` do navegador; portanto, ainda não há integração com um servidor ou banco de dados real. Alguns recursos planejados permanecem demonstrativos ou incompletos, especialmente notificações automáticas, newsletter, links de redes sociais, integração real com hospitais e persistência centralizada de consultas e registros médicos.
+O projeto funciona principalmente como um **protótipo front-end**. O CRUD de hospitais usa JSON Server e persiste seus dados no arquivo local `db.json`. Os dados de cadastro e sessão ainda são mantidos no `localStorage` do navegador. Alguns recursos planejados permanecem demonstrativos ou incompletos, especialmente notificações automáticas, newsletter, links de redes sociais, integração real com hospitais e persistência centralizada de consultas e registros médicos.
 
 ## Dificuldades encontradas
 
@@ -87,6 +87,17 @@ A nota não é máxima porque a aplicação ainda é um protótipo front-end: n�
 ## Como ver o projeto
 
 [Acesse o site do Instituto Med](instituto-med.surge.sh)
+
+## Desenvolvimento local
+
+Instale as dependências com `npm install`. Para carregar o CRUD de hospitais, inicie a API e o site em terminais separados:
+
+```bash
+npm run api
+npm run dev
+```
+
+A API usa JSON Server 0.17.4 e o arquivo `db.json`, disponível em `http://localhost:3000/hospitais`. O painel de administração fica em `http://localhost:5173/admin`; a listagem pública e os detalhes dos hospitais também consomem a API.
 
 
 

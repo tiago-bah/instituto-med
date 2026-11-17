@@ -8,6 +8,12 @@ const routes = [
     meta: { title: 'Instituto Med — Sua saúde conectada' }
   },
   {
+    path: '/admin',
+    name: 'admin',
+    component: () => import('../views/AdminView.vue'),
+    meta: { title: 'Administração — Instituto Med' }
+  },
+  {
     path: '/sobre',
     name: 'sobre',
     component: () => import('../views/SobrenosView.vue'),
